@@ -115,10 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
         songViewModel.getLiveCurrentSongIndex().observe(this,curSongIndex ->{
             if(!songViewModel.getIsBeforePlaying()){
-                if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
-                    Log.d("Ktl", "initMusicController: "+songViewModel.getLivePlayFlow().getValue().name());
-                    curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
-                }
+//                if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
+//                    curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
+//                }
                 if(curSongIndex>=0){
                     songViewModel.getMusicController().playSongAt(this,curSongIndex);
                     songViewModel.togglePlaying(true);

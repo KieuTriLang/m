@@ -78,14 +78,19 @@ public class SongViewModel extends ViewModel {
 }
 
     // GET
+    public int getByIndexInShuffle(int indexInShuffle){
+        return shuffleSongIndex.get(indexInShuffle);
+    }
     public int getIndexSongInShuffle(int index){
         return shuffleSongIndex.indexOf(index);
     }
-    public int getNextSongFromIndexOfShuffle(int indexInShuffle){
+    public int getNextSongFromIndexOfShuffle(int curSongIndex){
+        int indexInShuffle = getIndexSongInShuffle(curSongIndex);
         int nextIndexInShuffle = indexInShuffle + 1 >= shuffleSongIndex.size() ? 0 : indexInShuffle + 1;
         return shuffleSongIndex.get(nextIndexInShuffle);
     }
-    public int getPrevSongFromIndexOfShuffle(int indexInShuffle){
+    public int getPrevSongFromIndexOfShuffle(int curSongIndex){
+        int indexInShuffle = getIndexSongInShuffle(curSongIndex);
         int prevIndexInShuffle = indexInShuffle - 1 < 0 ? shuffleSongIndex.size()-1 : indexInShuffle - 1;
         return shuffleSongIndex.get(prevIndexInShuffle);
     }
@@ -120,9 +125,8 @@ public class SongViewModel extends ViewModel {
             return null;
         }
         int size = Objects.requireNonNull(listSong.getValue()).size();
-        if(playFlow.equals(MediaPlayerProp.FLOW_SHUFFLE)){
-            index = shuffleSongIndex.get(index);
-        }
+//
+
         if(index >= 0 && index < size){
             return Objects.requireNonNull(listSong.getValue()).get(index);
         }

@@ -62,9 +62,9 @@ public class MusicPlayBarFragment extends Fragment {
         initView(view);
 
         songViewModel.getLiveCurrentSongIndex().observe(getViewLifecycleOwner(),curSongIndex ->{
-            if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
-                curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
-            }
+//            if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
+//                curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
+//            }
             updatePlayBar(curSongIndex);
             updateAction(curSongIndex);
             if(curSongIndex != -1){
@@ -86,6 +86,10 @@ public class MusicPlayBarFragment extends Fragment {
             int curSongIndex = songViewModel.getLiveCurrentSongIndex().getValue();
             if(flow.equals(MediaPlayerProp.FLOW_SHUFFLE)){
                 curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
+            }else{
+                if(curSongIndex != -1){
+//                    curSongIndex = songViewModel.getByIndexInShuffle(curSongIndex);
+                }
             }
             updateAction(curSongIndex);
         });

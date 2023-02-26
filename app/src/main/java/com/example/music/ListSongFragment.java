@@ -43,9 +43,9 @@ public class ListSongFragment extends Fragment {
 
         songViewModel.getLiveCurrentSongIndex().observe(getViewLifecycleOwner(),curSongIndex->{
             Log.d("Ktl", "onCreateView: "+curSongIndex);
-            if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
-                curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
-            }
+//            if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
+//                curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
+//            }
             songAdapter.setSelectedIndex(curSongIndex);
             songAdapter.notifyDataSetChanged();
         });
