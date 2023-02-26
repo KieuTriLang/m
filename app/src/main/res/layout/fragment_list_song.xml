@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/song_item"
         android:clipToPadding="false"
-        android:paddingBottom="100dp"
+        android:paddingBottom="175dp"
 
 
         />

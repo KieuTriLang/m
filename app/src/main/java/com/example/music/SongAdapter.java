@@ -21,6 +21,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
 
     private List<Song> listSong = new ArrayList<>();
 
+    private int selectedIndex = -1;
+
     private OnClickSongItem onClickSongItem;
 
     public void setListSong(List<Song> list){
@@ -30,6 +32,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
     public void setOnClickSongItem(OnClickSongItem onClickSongItem){
         this.onClickSongItem = onClickSongItem;
     }
+
+    public void setSelectedIndex (int index){
+        this.selectedIndex = index;
+    }
+
     @NonNull
     @Override
     public SongHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -41,7 +48,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull SongHolder holder, int position) {
-        holder.bindView(listSong.get(position));
+        holder.bindView(listSong.get(position),position);
     }
 
     @Override
@@ -69,11 +76,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
             });
         }
 
-        public void bindView(Song song){
+        public void bindView(Song song,int pos){
             tvSongName.setText(song.getTitle());
             tvSongArtist.setText(song.getArtist());
             ivThumbnail.setImageURI(song.getAlbumUri());
-            ivPlay.setImageDrawable(null);
+            if(selectedIndex == pos){
+                ivPlay.setImageResource(R.drawable.musical_note);
+            }else{
+                ivPlay.setImageDrawable(null);
+            }
         }
 
         public void clearIvPlay(){
@@ -84,9 +95,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
 
         public void startAnimation(int pos){
             setPlayBtn();
-            Animation animation = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.infinity_rotate_animation);
-            animation.setDuration(listSong.get(pos).getMillisTimes());
-            ivPlay.startAnimation(animation);
+//            Animation animation = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.infinity_rotate_animation);
+//            animation.setDuration(listSong.get(pos).getMillisTimes());
+//            ivPlay.startAnimation(animation);
         }
         public void clearAnimation(){
             ivThumbnail.clearAnimation();

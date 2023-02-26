@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SongViewModel songViewModel;
 
-    private MusicController musicController;
+    private boolean initialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.fcv_list_song,ListSongFragment.class,null)
                     .add(R.id.fcv_play_bar,MusicPlayBarFragment.class,null)
                     .commit();
+        }else{
+            initialized = savedInstanceState.getBoolean("initialized");
         }
         songViewModel = new ViewModelProvider(this).get(SongViewModel.class);
 
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("initialized",true);
-        outState.putParcelable("musicController",musicController);
+        songViewModel.setIsBeforePlaying(true);
         super.onSaveInstanceState(outState);
     }
 
@@ -70,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish(List<Song> list) {
                 songViewModel.setListSong(list);
-                Log.d("Ktl", "onFinish: Call retrieve all song");
                 initMusicController();
             }
 
@@ -80,36 +82,62 @@ public class MainActivity extends AppCompatActivity {
     private void initMusicController(){
 
         // Music Controller
+        if(!initialized){
+            songViewModel.setMusicController(new MusicController(getApplicationContext(), new MusicController.MusicSource() {
+                @Override
+                public int getSize() {
+                    return songViewModel.getSize();
+                }
 
-        musicController = new MusicController(getApplicationContext(), new MusicController.MusicSource() {
-            @Override
-            public int getSize() {
-                return songViewModel.getSize();
-            }
+                @Override
+                public Song getAtIndex(int index) {
+                    return songViewModel.getAtIndex(index);
+                }
+            }));
+            songViewModel.getMusicController().getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    MusicController musicController = songViewModel.getMusicController();
+                    int curSongIndex = songViewModel.getLiveCurrentSongIndex().getValue();
+                    if(musicController.getIsNextSong()){
+                        musicController.setFalseIsNextSong();
+                        if(songViewModel.getPlayMode().equals(MediaPlayerProp.MODE_REPEAT_ONE)){
+                            songViewModel.setCurrentSongIndex(curSongIndex);
+                        }else{
+                            songViewModel.setCurrentSongIndex(curSongIndex+1);
+                        }
+                    }
+                }
+            });
+        }
 
-            @Override
-            public Song getAtIndex(int index) {
-                return songViewModel.getAtIndex(index);
-            }
-        });
+
 
         songViewModel.getLiveCurrentSongIndex().observe(this,curSongIndex ->{
-            if(!songViewModel.getIsFirst()){
-                musicController.playSongAt(this,curSongIndex);
-                songViewModel.togglePlaying(true);
+            if(!songViewModel.getIsBeforePlaying()){
+                if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
+                    Log.d("Ktl", "initMusicController: "+songViewModel.getLivePlayFlow().getValue().name());
+                    curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
+                }
+                if(curSongIndex>=0){
+                    songViewModel.getMusicController().playSongAt(this,curSongIndex);
+                    songViewModel.togglePlaying(true);
+                }
             }
+
 
         });
         songViewModel.getLiveIsPlaying().observe(this,isPlaying->{
             if(!isPlaying){
-                musicController.pause();
+                songViewModel.getMusicController().pause();
             }else{
-                if(songViewModel.getIsFirst()){
-                    songViewModel.setIsFirst(false);
+                if(songViewModel.getLiveCurrentSongIndex().getValue() ==-1){
+//                    songViewModel.setIsFirst(false);
                     songViewModel.setCurrentSongIndex(0);
                 }else{
-                    musicController.start();
+                    songViewModel.getMusicController().start();
                 }
+
             }
         });
 

@@ -13,12 +13,14 @@ import android.util.Log;
 
 import phucdv.android.musichelper.Song;
 
-public class MusicController implements Parcelable {
+public class MusicController {
     private Context mContext;
     private MediaPlayer mMediaPlayer;
     private int mCurrentIndex;
     private boolean mIsPreparing;
     private MusicSource mMusicSource;
+
+    private boolean isNextSong;
 
     public interface MusicSource {
         int getSize();
@@ -30,55 +32,40 @@ public class MusicController implements Parcelable {
         mMusicSource = musicSource;
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        isNextSong = false;
         mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
                 mIsPreparing = false;
+                isNextSong = true;
             }
         });
-//        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mediaPlayer) {
-//                mediaPlayer.
-//            }
-//        });
 
         mCurrentIndex = -1;
         mIsPreparing = false;
     }
-
-
-    protected MusicController(Parcel in) {
-        mCurrentIndex = in.readInt();
-        mIsPreparing = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mCurrentIndex);
-        dest.writeByte((byte) (mIsPreparing ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<MusicController> CREATOR = new Creator<MusicController>() {
-        @Override
-        public MusicController createFromParcel(Parcel in) {
-            return new MusicController(in);
-        }
-
-        @Override
-        public MusicController[] newArray(int size) {
-            return new MusicController[size];
-        }
-    };
-
     public int getCurrentIndex() {
         return mCurrentIndex;
+    }
+
+    public void setFalseIsNextSong(){
+        this.isNextSong = false;
+    }
+    public boolean getIsNextSong(){
+        return this.isNextSong;
+    }
+
+    public int getCurrentPositionOfMP(){
+        return mMediaPlayer.getCurrentPosition();
+    }
+
+    public int getDurationOfMP(){
+        return mMediaPlayer.getDuration();
+    }
+
+    public MediaPlayer getMediaPlayer(){
+        return this.mMediaPlayer;
     }
 
     public boolean isPlaying(){
@@ -88,6 +75,7 @@ public class MusicController implements Parcelable {
     public boolean isPreparing(){
         return mIsPreparing;
     }
+
 
     public void playNext() {
         if(mMusicSource.getSize() != 0) {

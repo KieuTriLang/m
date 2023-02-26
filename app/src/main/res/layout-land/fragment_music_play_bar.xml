@@ -52,14 +52,16 @@
         android:text="0:00"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/pb_timeLine"
-        app:layout_constraintTop_toBottomOf="@+id/pb_timeLine" />
+        app:layout_constraintStart_toStartOf="@+id/sb_timeLine"
+        app:layout_constraintTop_toBottomOf="@+id/sb_timeLine" />
 
-    <ProgressBar
-        android:id="@+id/pb_timeLine"
+    <SeekBar
+        android:id="@+id/sb_timeLine"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="221dp"
+        android:minWidth="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="15dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/iv_next"
         app:layout_constraintStart_toStartOf="@+id/iv_prev"
@@ -73,28 +75,28 @@
         android:text="3:38"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/pb_timeLine"
-        app:layout_constraintTop_toBottomOf="@+id/pb_timeLine" />
+        app:layout_constraintEnd_toEndOf="@+id/sb_timeLine"
+        app:layout_constraintTop_toBottomOf="@+id/sb_timeLine" />
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/iv_play_flow"-->
-    <!--        android:layout_marginTop="5dp"-->
-    <!--        android:layout_width="20dp"-->
-    <!--        android:layout_height="20dp"-->
-    <!--        android:src="@drawable/shuffle"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        />-->
+    <ImageView
+        android:id="@+id/iv_play_flow"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/parallel"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail_music"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_thumbnail_music"
+        app:layout_constraintTop_toTopOf="@+id/iv_thumbnail_music" />
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/iv_play_mode"-->
-    <!--        android:layout_marginBottom="5dp"-->
-    <!--        android:layout_width="20dp"-->
-    <!--        android:layout_height="20dp"-->
-    <!--        android:src="@drawable/repeat_all"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        />-->
+    <ImageView
+        android:id="@+id/iv_play_mode"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/repeat_all"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail_music"
+        app:layout_constraintEnd_toStartOf="@+id/iv_thumbnail_music"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_thumbnail_music" />
 
     <ImageView
         android:id="@+id/iv_next"

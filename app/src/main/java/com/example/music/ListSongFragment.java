@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 import java.util.Objects;
 
-import phucdv.android.musichelper.Song;
-
 public class ListSongFragment extends Fragment {
 
     private SongViewModel songViewModel;
@@ -43,22 +41,27 @@ public class ListSongFragment extends Fragment {
             songAdapter.setListSong(listSong);
         });
 
-//        songViewModel.getLiveCurrentSongIndex().observe(getViewLifecycleOwner(),curSongIndex->{
-//            resetHolder();
-//            SongAdapter.SongHolder holder = (SongAdapter.SongHolder) rcvListSong.getChildViewHolder(rcvListSong.getChildAt(curSongIndex));
-//            holder.setPlayBtn();
-//        });
+        songViewModel.getLiveCurrentSongIndex().observe(getViewLifecycleOwner(),curSongIndex->{
+            Log.d("Ktl", "onCreateView: "+curSongIndex);
+            if(Objects.equals(songViewModel.getLivePlayFlow().getValue(), MediaPlayerProp.FLOW_SHUFFLE)){
+                curSongIndex = songViewModel.getIndexSongInShuffle(curSongIndex);
+            }
+            songAdapter.setSelectedIndex(curSongIndex);
+            songAdapter.notifyDataSetChanged();
+        });
 
         songAdapter.setOnClickSongItem((holder,pos)->{
 
             if(songViewModel.getLiveCurrentSongIndex().getValue() != pos){
-                songViewModel.setIsFirst(false);
+                songViewModel.setIsBeforePlaying(false);
+                songViewModel.getMusicController().setFalseIsNextSong();
                 songViewModel.setCurrentSongIndex(pos);
             }else{
                 songViewModel.togglePlaying();
             }
-//            resetHolder();
-//            holder.startAnimation(pos);
+            songAdapter.setSelectedIndex(pos);
+            resetHolder();
+            holder.startAnimation(pos);
 
         });
 
